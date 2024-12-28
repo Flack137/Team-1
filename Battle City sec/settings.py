@@ -29,23 +29,23 @@ BULLET_SPEED = int(PLAYER_SPEED * 5)
 tilemap = [
     'BBBBBBBBBBBBBBBBBBBBBB',
     'B....................B',
-    'B....................B',
-    'B....................B',
-    'B....................B',
-    'B....................B',
-    'B....................B',
-    'B....................B',
-    'B....................B',
-    'B....................B',
-    'B....II..............B',
-    'B....................B',
-    'B....EE..............B',
-    'B....BB..............B',
-    'B....................B',
-    'B....KK..............B',
-    'B....LL..............B',
-    'B....................B',
-    'B....................B',
+    'B.................E.KB',
+    'B.....ELL.....LLBBBIKB',
+    'B....KKKK...........KB',
+    'B....II.....E........B',
+    'B........LLLBKB......B',
+    'B...........KKB......B',
+    'B..BBB..........BBB..B',
+    'B..BKK..........KKB..B',
+    'B..BKI...LBBL...IKB..B',
+    'B..BKI...LBBL...IKB..B',
+    'B..BKK..........KKB..B',
+    'B..BBB.......B..BBB..B',
+    'B........LL..B.......B',
+    'B....BBBK............B',
+    'B.......KBBI..IBB....B',
+    'B.....KKK.......B....B',
+    'B.....BBB......BB....B',
     'B.........P..........B',
     'B....................B',
     'BBBBBBBBBBBBBBBBBBBBBB',
@@ -83,5 +83,5 @@ BOOM_SOUND = pygame.mixer.Sound("sounds/boom.wav")
 ENGINE_SOUND = pygame.mixer.Sound("sounds/engine.wav")
 SHOOT_SOUND = pygame.mixer.Sound("sounds/shoot.wav")
 
-ENGINE_SOUND.set_volume(0.5)  # 50% гучності
+ENGINE_SOUND.set_volume(0.2)  # 50% гучності
 pygame.mixer.music.set_volume(0.2)

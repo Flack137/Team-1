@@ -18,10 +18,8 @@ class Player(Entity):
         self.enemies = enemies
         self.iron_walls = iron_walls
         self.last_shot_time = 0
-        # ENGINE_SOUND.play(-1)
-        # self.bullets_group = None
-        # self.image = pygame.transform.scale(self.image, (PLAYER_SIZE, PLAYER_SIZE))
-        # self.rect = self.image.get_rect(center=(x + TILE_SIZE // 2, y + TILE_SIZE // 2))
+        self.rect = self.image.get_rect(center=(x + TILE_SIZE // 2, y + TILE_SIZE // 2))
+        self.rect.inflate_ip(-self.rect.width * 0.2, -self.rect.height * 0.2)
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -161,6 +159,8 @@ class Enemy(Entity):
         self.walls = walls  # Додаємо групу стін
         self.ice_blocks = ice_blocks  # Додаємо групу льодових блоків
         self.iron_walls = iron_walls 
+        self.rect = self.image.get_rect(center=(x + TILE_SIZE // 2, y + TILE_SIZE // 2))
+        self.rect.inflate_ip(-self.rect.width * 0.2, -self.rect.height * 0.2)
 
     def update(self, player):
         # Виклик стратегії руху
