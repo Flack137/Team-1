@@ -1,4 +1,12 @@
 import pygame
+from entiti_obstacle import EntityObstacle
+from abc import ABC, abstractmethod
+import math
+from entiti_obstacle import EntityObstacle, Wall, Ice, Bushes, IronWall
+from bullet import Bullet
+from player import Player
+from enemy import Enemy
+from tilemap import *
 
 pygame.init()
 pygame.mixer.init()
@@ -26,56 +34,31 @@ ENEMY_SPEED = 2
 BULLET_SPEED = int(PLAYER_SPEED * 5)
 #швидкості переміщення об'єктів
 
-tilemap = [
-    'BBBBBBBBBBBBBBBBBBBBBB',
-    'B....................B',
-    'B.................E.KB',
-    'B.....ELL.....LLBBBIKB',
-    'B....KKKK...........KB',
-    'B....II.....E........B',
-    'B........LLLBKB......B',
-    'B...........KKB......B',
-    'B..BBB..........BBB..B',
-    'B..BKK..........KKB..B',
-    'B..BKI...LBBL...IKB..B',
-    'B..BKI...LBBL...IKB..B',
-    'B..BKK..........KKB..B',
-    'B..BBB.......B..BBB..B',
-    'B........LL..B.......B',
-    'B....BBBK............B',
-    'B.......KBBI..IBB....B',
-    'B.....KKK.......B....B',
-    'B.....BBB......BB....B',
-    'B.........P..........B',
-    'B....................B',
-    'BBBBBBBBBBBBBBBBBBBBBB',
-] #сітка мапи
-
 PLAYER_IMAGES = {
-    "up": ["sprites/player_up1.png", "sprites/player_up2.png"],
-    "down": ["sprites/player_down1.png", "sprites/player_down2.png"],
-    "left": ["sprites/player_l1.png", "sprites/player_l2.png"],
-    "right": ["sprites/player_r1.png", "sprites/player_r2.png"]
+    "up": ["sprites/player_animation/player_up1.png", "sprites/player_animation/player_up2.png"],
+    "down": ["sprites/player_animation/player_down1.png", "sprites/player_animation/player_down2.png"],
+    "left": ["sprites/player_animation/player_l1.png", "sprites/player_animation/player_l2.png"],
+    "right": ["sprites/player_animation/player_r1.png", "sprites/player_animation/player_r2.png"]
 } #зображення для анімацій гравця
 
-WALL_IMAGE = "sprites/wall.png"
-ICE_IMAGE = "sprites/ice.png"
-BUSH_IMAGE = "sprites/bushes.png"
-IRON_WALL_IMAGE = "sprites/iron_wall.jpg"
+WALL_IMAGE = "sprites/obstacle_sprites/wall.png"
+ICE_IMAGE = "sprites/obstacle_sprites/ice.png"
+BUSH_IMAGE = "sprites/obstacle_sprites/bushes.png"
+IRON_WALL_IMAGE = "sprites/obstacle_sprites/iron_wall.jpg"
 #зображення стін та льоду(води), кущів
 
 ENEMY_IMAGES = {
-    "up": ["sprites/enemy.png", "sprites/enemy2.png"],
-    "down": ["sprites/enemy_down1.png", "sprites/enemy_down2.png"],
-    "left": ["sprites/enemy_l1.png", "sprites/enemy_l2.png"],
-    "right": ["sprites/enemy_r1.png", "sprites/enemy_r2.png"]
+    "up": ["sprites/enemy_animation/enemy.png", "sprites/enemy_animation/enemy2.png"],
+    "down": ["sprites/enemy_animation/enemy_down1.png", "sprites/enemy_animation/enemy_down2.png"],
+    "left": ["sprites/enemy_animation/enemy_l1.png", "sprites/enemy_animation/enemy_l2.png"],
+    "right": ["sprites/enemy_animation/enemy_r1.png", "sprites/enemy_animation/enemy_r2.png"]
 } #зображення для анімацій ворогів
 
 BULLETS_IMAGE = "sprites/bullet.jpg"
 BOOM_IMAGES = [
-    "sprites/boom1.png",
-    "sprites/boom2.png",
-    "sprites/boom3.png"
+    "sprites/bullet_explosion/boom1.png",
+    "sprites/bullet_explosion/boom2.png",
+    "sprites/bullet_explosion/boom3.png"
 ]
 
 pygame.mixer.music.load("sounds/vietnam.mp3")
@@ -84,4 +67,4 @@ ENGINE_SOUND = pygame.mixer.Sound("sounds/engine.wav")
 SHOOT_SOUND = pygame.mixer.Sound("sounds/shoot.wav")
 
 ENGINE_SOUND.set_volume(0.2)  # 50% гучності
-pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.set_volume(0)
