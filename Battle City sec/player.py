@@ -1,5 +1,6 @@
-from settings import *
-
+from settings import*
+from bullet import Bullet
+from entiti_obstacle import EntityObstacle
 
 class Player(EntityObstacle):
     def __init__(self, x, y, *groups, walls, iron_walls, ice_blocks, bushs, enemies):

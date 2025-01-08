@@ -1,11 +1,4 @@
 import pygame
-from entiti_obstacle import EntityObstacle
-from abc import ABC, abstractmethod
-import math
-from entiti_obstacle import EntityObstacle, Wall, Ice, Bushes, IronWall
-from bullet import Bullet
-from player import Player
-from enemy import Enemy
 from tilemap import *
 
 pygame.init()
@@ -54,17 +47,29 @@ ENEMY_IMAGES = {
     "right": ["sprites/enemy_animation/enemy_r1.png", "sprites/enemy_animation/enemy_r2.png"]
 } #зображення для анімацій ворогів
 
-BULLETS_IMAGE = "sprites/bullet.jpg"
+BULLETS_IMAGE = "sprites/bullet_explosion/bullet.jpg"
 BOOM_IMAGES = [
     "sprites/bullet_explosion/boom1.png",
     "sprites/bullet_explosion/boom2.png",
     "sprites/bullet_explosion/boom3.png"
 ]
 
+LOSE = "sprites/result_images/lossimage.png"
+
+WIN = "sprites/result_images/victoryimage.png"
+
 pygame.mixer.music.load("sounds/vietnam.mp3")
 BOOM_SOUND = pygame.mixer.Sound("sounds/boom.wav")
 ENGINE_SOUND = pygame.mixer.Sound("sounds/engine.wav")
 SHOOT_SOUND = pygame.mixer.Sound("sounds/shoot.wav")
-
-ENGINE_SOUND.set_volume(0.2)  # 50% гучності
-pygame.mixer.music.set_volume(0)
+WIN_SOUND = pygame.mixer.Sound("sounds/victory_sound.mp3")
+DEFEAT_SOUND = pygame.mixer.Sound("sounds/defeat_sound.mp3")
+GAME_START_SOUND = pygame.mixer.Sound("sounds/game_start_bc.mp3")
+ENGINE_SOUND.set_volume(0.1)
+SHOOT_SOUND.set_volume(0.1)
+WIN_SOUND.set_volume(0.3)
+DEFEAT_SOUND.set_volume(0.1)
+GAME_START_SOUND.set_volume(0.1)
+pygame.mixer.music.set_volume(0.1)
+BOOM_SOUND.set_volume(0.1)
+print("PLAYER_IMAGES['down'][0]:", PLAYER_IMAGES["down"][0])

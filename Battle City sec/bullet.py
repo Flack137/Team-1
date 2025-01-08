@@ -1,4 +1,5 @@
 from settings import *
+from entiti_obstacle import EntityObstacle
 
 
 class Bullet(EntityObstacle):

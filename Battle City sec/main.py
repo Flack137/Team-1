@@ -1,8 +1,13 @@
 from settings import *
+from enemy import Enemy
+from player import Player
+from entiti_obstacle import EntityObstacle, Wall, Ice, Bushes, IronWall
+import time
 
 class Game:
     def __init__(self):
         pygame.init()
+        self.elims = 0
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))#створення вікна
         pygame.display.set_caption("Battle City")#заголовок вікна
         self.clock = pygame.time.Clock()
@@ -15,7 +20,8 @@ class Game:
         self.ice_blocks = pygame.sprite.Group()
         self.bushes = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
-        self.bullets = pygame.sprite.Group()
+        self.player_bullets = pygame.sprite.Group()
+        self.enemy_bullets = pygame.sprite.Group()
         self.iron_walls = pygame.sprite.Group()
         #створення об'єкту гравця
         self.player = Player(
@@ -53,6 +59,13 @@ class Game:
                 elif tile == "I":
                     IronWall(x, y, self.all_sprites, self.iron_walls)
 
+    def wait_for_explosions(self):
+        while any(sprite.exploding for sprite in self.all_sprites if hasattr(sprite, 'exploding')):
+            self.clock.tick(FPS)  # Keep ticking to maintain FPS
+            self.handle_events()
+            self.update()
+            self.draw()
+
     def run(self):
         # Метод для відображення стартового екрану
         font = pygame.font.Font(None, 74)
@@ -78,19 +91,92 @@ class Game:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if start_button.collidepoint(event.pos):
                         self.running = False  # Завершення стартового вікна
-                        self.playing = True  # Запуск гри
+                        self.playing = True # Запуск гри
+                        GAME_START_SOUND.play()
                         ENGINE_SOUND.play(-1)
                     elif quit_button.collidepoint(event.pos):
                         self.running = False
 
     def run2(self):
-        #функція з основним циклом
-        pygame.mixer.music.play()  # Відтворення фонової музики в циклі
+        # Лічильник знищених ворогів
+        GAME_START_SOUND.play()
+        eliminations = 0
+        total_enemies = len(self.enemies_list)  # Загальна кількість ворогів
+
         while self.playing:
-            self.clock.tick(FPS)#обмежена кількість кадрів на сек. (60)
-            self.handle_events()#функція-обробник подій
-            self.update()#оновлення
-            self.draw()#відмальовування на екран
+            self.clock.tick(FPS)  # Обмежена кількість кадрів на сек. (60)
+            self.handle_events()  # Обробник подій
+            self.update()  # Оновлення
+
+            # Перевірка на знищення ворогів
+            eliminations = total_enemies - len(self.enemies)  # Знищені вороги
+
+            if eliminations >= total_enemies:
+                # Wait for all explosion animations to finish
+                self.wait_for_explosions()
+                self.playing = False
+                ENGINE_SOUND.stop()
+                WIN_SOUND.play()
+                self.show_victory_screen()  # Показ екрану перемоги
+
+
+            self.draw()  # Відмальовування на екран
+
+    def show_victory_screen(self):
+        # Load the victory image
+        victory_image = pygame.image.load(WIN).convert_alpha()
+        victory_image = pygame.transform.scale(victory_image, (500, 500))  # Adjust size if needed
+
+        # Blit the victory image onto the center of the screen
+        image_rect = victory_image.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        self.screen.blit(victory_image, image_rect)
+        pygame.display.flip()  # Update the display
+
+        # Pause for 5 seconds
+        start_time = time.time()
+        while time.time() - start_time < 5:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.playing = False
+                    self.running = False
+                    pygame.quit()
+                    return
+
+            pygame.time.delay(100)  # Prevent high CPU usage during the delay
+
+        # Reset the game states properly
+        self.playing = False
+        self.running = True  # Keep the game running
+        self.__init__()  # Reinitialize game objects
+
+        self.run()  # Return to the start screen
+
+    def show_defeat_screen(self):
+        # Load the victory image
+        defeat_image = pygame.image.load(LOSE).convert_alpha()
+        defeat_image = pygame.transform.scale(defeat_image, (750, 500))  # Adjust size if needed
+
+        # Blit the victory image onto the center of the screen
+        image_rect = defeat_image.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        self.screen.blit(defeat_image, image_rect)
+        pygame.display.flip()  # Update the display
+
+        start_time = time.time()
+        while time.time() - start_time < 5:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.playing = False
+                    self.running = False
+                    pygame.quit()
+                    return
+
+            pygame.time.delay(100)  # Prevent high CPU usage during the delay
+
+        self.playing = False
+        self.running = True  # Keep the game running
+        self.__init__()  # Reinitialize game objects
+        self.run()  # Return to the start screen
+
 
     def handle_events(self):
         #обробка всіх подій
@@ -100,7 +186,7 @@ class Game:
             #завершення циклу
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    self.player.shoot(self.bullets, self.all_sprites)
+                    self.player.shoot(self.player_bullets, self.all_sprites)
                 elif event.key == pygame.K_ESCAPE:
                     self.playing = False
                     self.running = True
@@ -110,15 +196,27 @@ class Game:
     def update(self):
         for sprite in self.all_sprites:
             if isinstance(sprite, Enemy):
-                sprite.update(self.player)  # Передаємо гравця тільки ворогам
+                sprite.update(self.player, self.enemy_bullets, self.all_sprites)  # Передаємо гравця тільки ворогам
             else:
                 sprite.update()
-    #функція оновлення: спрайтів та колізій(наприклад події зіткнення)
-        for bullet in self.bullets:
+        # функція оновлення: спрайтів та колізій(наприклад події зіткнення)
+        for bullet in self.player_bullets:
             collided_walls = pygame.sprite.spritecollide(bullet, self.walls, True)
             if collided_walls:
                 bullet.start_explosion()
             elif pygame.sprite.spritecollide(bullet, self.enemies, True):
+                bullet.start_explosion()
+                self.elims += 1  # Збільшуємо лічильник знищених ворогів
+            elif pygame.sprite.spritecollide(bullet, self.iron_walls, False):
+                bullet.start_explosion()
+        for bullet in self.enemy_bullets:
+            collided_walls = pygame.sprite.spritecollide(bullet, self.walls, True)
+            if pygame.sprite.collide_rect(bullet, self.player):
+                DEFEAT_SOUND.play()  # Відтворення звуку поразки
+                ENGINE_SOUND.stop()  # Зупинка звуку двигуна
+                self.show_defeat_screen()  # Показ екрану поразки
+                return 
+            elif collided_walls:
                 bullet.start_explosion()
             elif pygame.sprite.spritecollide(bullet, self.iron_walls, False):
                 bullet.start_explosion()
@@ -137,3 +235,4 @@ if __name__ == "__main__":
     game.run2()
     pygame.quit()#завершення роботи
 
+#bullets
