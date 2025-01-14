@@ -44,6 +44,6 @@ class Bullet(EntityObstacle):
             self.current_frame += 1
             if self.current_frame < len(self.explosion_images):
                 self.image = pygame.image.load(self.explosion_images[self.current_frame]).convert_alpha()
-                self.image = pygame.transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
+                self.image = pygame.transform.scale(self.image, (TILE_SIZE , TILE_SIZE))
             else:
                 self.kill()  # Видалення кулі після завершення анімації

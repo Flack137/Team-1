@@ -1,0 +1,54 @@
+    def show_victory_screen(self):
+        # Load the victory image
+        victory_image = pygame.image.load(WIN).convert_alpha()
+        victory_image = pygame.transform.scale(victory_image, (500, 500))  # Adjust size if needed
+
+        # Blit the victory image onto the center of the screen
+        image_rect = victory_image.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        self.screen.blit(victory_image, image_rect)
+        pygame.display.flip()  # Update the display
+
+        # Pause for 5 seconds
+        start_time = time.time()
+        while time.time() - start_time < 5:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.playing = False
+                    self.running = False
+                    pygame.quit()
+                    return
+
+            pygame.time.delay(100)  # Prevent high CPU usage during the delay
+
+        # Reset the game states properly
+        self.playing = False
+        self.running = True  # Keep the game running
+        self.__init__()  # Reinitialize game objects
+
+        self.run()  # Return to the start screen
+
+    def show_defeat_screen(self):
+        # Load the victory image
+        defeat_image = pygame.image.load(LOSE).convert_alpha()
+        defeat_image = pygame.transform.scale(defeat_image, (750, 500))  # Adjust size if needed
+
+        # Blit the victory image onto the center of the screen
+        image_rect = defeat_image.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        self.screen.blit(defeat_image, image_rect)
+        pygame.display.flip()  # Update the display
+
+        start_time = time.time()
+        while time.time() - start_time < 5:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.playing = False
+                    self.running = False
+                    pygame.quit()
+                    return
+
+            pygame.time.delay(100)  # Prevent high CPU usage during the delay
+
+        self.playing = False
+        self.running = True  # Keep the game running
+        self.__init__()  # Reinitialize game objects
+        self.run()  # Return to the start screen

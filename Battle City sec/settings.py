@@ -23,7 +23,7 @@ BACKGROUND_COLOR = (0, 0, 0)
 #кольори
 
 PLAYER_SPEED = 2
-ENEMY_SPEED = 2
+ENEMY_SPEED = 1.75
 BULLET_SPEED = int(PLAYER_SPEED * 5)
 #швидкості переміщення об'єктів
 
@@ -66,10 +66,20 @@ WIN_SOUND = pygame.mixer.Sound("sounds/victory_sound.mp3")
 DEFEAT_SOUND = pygame.mixer.Sound("sounds/defeat_sound.mp3")
 GAME_START_SOUND = pygame.mixer.Sound("sounds/game_start_bc.mp3")
 ENGINE_SOUND.set_volume(0.1)
-SHOOT_SOUND.set_volume(0.1)
+SHOOT_SOUND.set_volume(0.08)
 WIN_SOUND.set_volume(0.3)
 DEFEAT_SOUND.set_volume(0.1)
 GAME_START_SOUND.set_volume(0.1)
 pygame.mixer.music.set_volume(0.1)
-BOOM_SOUND.set_volume(0.1)
+BOOM_SOUND.set_volume(0.08)
 print("PLAYER_IMAGES['down'][0]:", PLAYER_IMAGES["down"][0])
+
+
+enemy_bullets = pygame.sprite.Group()
+all_sprites = pygame.sprite.Group()
+walls = pygame.sprite.Group()
+ice_blocks = pygame.sprite.Group()
+player_bullets = pygame.sprite.Group()
+bushes = pygame.sprite.Group()
+enemies = pygame.sprite.Group()
+iron_walls = pygame.sprite.Group()
